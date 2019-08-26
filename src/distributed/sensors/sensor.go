@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"flag"
+	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/dto"
 	"log"
 	"math/rand"
 	"strconv"
@@ -28,8 +31,20 @@ func main() {
 
 	signal := time.Tick(duration)
 
+	buf := new(bytes.Buffer)
+	enc := gob.NewEncoder(buf)
+
 	for range signal {
 		calcValue()
+		reading := dto.SensorMessage{
+			Name: *name,
+			Value: value,
+			Timestamp: time.Now(),
+
+		}
+		buf.Reset()
+		enc.Encode(reading)
+
 		log.Printf("Reading sent. Value: %v\n", value)
 	}
 }
