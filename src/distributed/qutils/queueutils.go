@@ -16,9 +16,11 @@ func GetChannel(url string) (*amqp.Connection, * amqp.Channel) {
 	return conn, ch
 }
 
-func getQueue(name string, ch *amqp.Channel) *amqp.Queue {
+func GetQueue(name string, ch *amqp.Channel) *amqp.Queue {
 	q, err := ch.QueueDeclare(name, false, false, false, false, nil)
 	failOnError(err, "failed to declare queue")
+
+	return &q
 }
 
 func failOnError(err error, msg string){
