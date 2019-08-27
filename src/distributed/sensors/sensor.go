@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"encoding/gob"
 	"flag"
+	"github.com/streadway/amqp"
 	"log"
 	"math/rand"
 	"strconv"
 	"time"
 
 	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/dto"
+	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/qutils"
 )
 
 var (
@@ -31,6 +33,12 @@ var (
 func main() {
 	flag.Parse()
 
+	conn, ch := qutils.GetChannel(url)
+	defer conn.Close()
+	defer ch.Close()
+
+	dataQueue := qutils.GetQueue(*name, ch)
+
 	duration, _ := time.ParseDuration(strconv.Itoa(1000/int(*freq)) + "ms")
 
 	signal := time.Tick(duration)
@@ -48,6 +56,18 @@ func main() {
 		}
 		buf.Reset()
 		enc.Encode(reading)
+
+		msg := amqp.Publishing{
+			Body: buf.Bytes(),
+		}
+
+		ch.Publish(
+			"", // exchange string,
+			dataQueue.Name, // key string,
+			false, // mandatory bool,
+			false, // immediate bool,
+			msg, // msg amqp.Publishing,
+			)
 
 		log.Printf("Reading sent. Value: %v\n", value)
 	}
