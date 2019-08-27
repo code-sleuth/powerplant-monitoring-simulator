@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/gob"
 	"flag"
-	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/dto"
 	"log"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/dto"
 )
 
 var (
@@ -21,6 +22,9 @@ var (
 	r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	value = r.Float64() * (*max - *min) + *min
 	nom = (*max - *min) / 2 + *min
+
+	// best to store this in an environment variable
+	url = "amqp://boss:inetutils@localhost:5672"
 )
 
 
