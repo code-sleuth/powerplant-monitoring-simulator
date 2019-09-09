@@ -7,6 +7,7 @@ import (
 	"github.com/streadway/amqp"
 	"log"
 	"math/rand"
+	"os"
 	"strconv"
 	"time"
 
@@ -25,8 +26,8 @@ var (
 	value = r.Float64() * (*max - *min) + *min
 	nom = (*max - *min) / 2 + *min
 
-	// best to store this in an environment variable
-	url = "amqp://boss:inetutils@localhost:5672"
+	url = os.Getenv("CONNSTRING") //"amqp://<user>:<password>@localhost:5672"
+
 )
 
 

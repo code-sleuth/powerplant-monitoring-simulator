@@ -4,25 +4,26 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"os"
+
 	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/dto"
 	"github.com/code-sleuth/powerplant-monitoring-simulator/src/distributed/qutils"
 	"github.com/streadway/amqp"
 )
-
-const url = "amqp://boss:inetutils@localhost:5672"
+var url = os.Getenv("CONNSTRING") //"amqp://<user>:<password>@localhost:5672"
 
 type QueueListener struct {
-	conn *amqp.Connection
-	ch *amqp.Channel
+	conn    *amqp.Connection
+	ch      *amqp.Channel
 	sources map[string]<-chan amqp.Delivery
 }
 
-func  NewQueueListener()  *QueueListener {
+func NewQueueListener() *QueueListener {
 	ql := QueueListener{
 		sources: make(map[string]<-chan amqp.Delivery),
 	}
 
-	ql.conn, ql. ch  = qutils.GetChannel(url)
+	ql.conn, ql.ch = qutils.GetChannel(url)
 
 	return &ql
 }
@@ -33,29 +34,29 @@ func (ql *QueueListener) ListenForNewSource() {
 		q.Name,       // name string,
 		"",           // key string,
 		"amq.fanout", // exchange string,
-		false, // noWait bool,
-		nil, // args amqp.Table
+		false,        // noWait bool,
+		nil,          // args amqp.Table
 	)
 
 	msgs, _ := ql.ch.Consume(
 		q.Name, // queue string,
-		"", // consumer sting,
-		true, // utoAck bool,
-		false, // exclusive bool,
-		false, // noLocal bool,
-		false, // noWait bool,
-		nil, // args amqp.Table
+		"",     // consumer sting,
+		true,   // utoAck bool,
+		false,  // exclusive bool,
+		false,  // noLocal bool,
+		false,  // noWait bool,
+		nil,    // args amqp.Table
 	)
 
 	for msg := range msgs {
 		sourceChan, _ := ql.ch.Consume(
 			string(msg.Body), // queue string,
-			"", // consumer string,
-			true, // utoAck bool,
-			false, // exclusive bool,
-			false, // noLocal bool,
-			false, // noWait bool,
-			nil, // args amqp.Table
+			"",               // consumer string,
+			true,             // utoAck bool,
+			false,            // exclusive bool,
+			false,            // noLocal bool,
+			false,            // noWait bool,
+			nil,              // args amqp.Table
 		)
 
 		if ql.sources[string(msg.Body)] == nil {
