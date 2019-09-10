@@ -1,0 +1,45 @@
+#!/bin/bash
+# options
+# -s = sensors
+# -c = coordinators
+# example $ ./run -s
+set -e
+
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+options=0
+system=0
+while getopts ":sc" opt; do
+  case $opt in
+    s)
+        ((options++))
+        ((system=1))
+        ;;
+    c)
+        ((options++))
+        ((system=2))
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG.  Valid options are either -s or -c" >&2
+        exit 1
+        ;;
+  esac
+done
+
+if (($options != 1)); then
+    echo "Invalid option passed.  Valid options are either -s or -c" >&2
+    exit 1
+fi
+
+case $system in
+    1)
+        echo -e "${BLUE}===============RUNNING SENSORS==================" >&2
+        go run ./src/distributed/sensors/sensor.go
+        ;;
+    2)
+        echo -e "${RED}===============RUNNING COORDINATORS==================" >&2
+        go run ./src/distributed/coordinator/exec/main.go
+        ;;
+esac
