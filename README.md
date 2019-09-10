@@ -27,12 +27,16 @@ pressures in order to achieve the highest possible efficiency. The monitoring sy
 
 
 ## Start Systems
-1. Export rabbitmq connection string in your terminal  
+1. Pull Repo
+    * `git clone git@github.com:code-sleuth/powerplant-monitoring-simulator.git`  
+    * `cd powerplant-monitoring-simulator`  
+    
+2. Export rabbitmq connection string in your terminal  
 `export CONNSTRING=amqp://<user>:<password>@localhost:5672`
 
-2. Run Coordinators  
+3. Run Coordinators  
 `make run_coordinators`
 
-3. Run Sensors  
+4. Run Sensors  
 `make run_sensors`
 
