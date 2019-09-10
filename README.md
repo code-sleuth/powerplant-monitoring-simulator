@@ -2,8 +2,7 @@
 
 This application simulates a monitoring system for a power plant.  
 This type of monitoring is critical since the steam in a modern power plant is often at extremely high temperatures and  
-pressures in order to achieve the highest possible efficiency. The monitoring system ensures that everything is operating  
-withing a range that balances efficiency and safety.
+pressures in order to achieve the highest possible efficiency. The monitoring system ensures that everything is operating withing a range that balances efficiency and safety.
 
 ## Main Requirements
 1. Record Measurements
